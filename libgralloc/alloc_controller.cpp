@@ -110,6 +110,7 @@ AdrenoMemInfo::~AdrenoMemInfo()
 int AdrenoMemInfo::getStride(int width, int format)
 {
     int stride = ALIGN(width, 32);
+	
     // Currently surface padding is only computed for RGB* surfaces.
     if (format <= HAL_PIXEL_FORMAT_sRGB_X_8888) {
         int bpp = 4;
@@ -165,6 +166,7 @@ int AdrenoMemInfo::getStride(int width, int format)
             default: break;
         }
     }
+	
     return stride;
 }
 
@@ -402,8 +404,14 @@ size_t getBufferSizeAndDimensions(int width, int height, int format,
             alignedh = ALIGN(height, 64);
             size = ALIGN((alignedw*alignedh) + (alignedw* alignedh)/2, 4096);
             break;
+	// Special evo 3D case
+	case 69897:
+	    size = alignedw * alignedh * 2;
+	    ALOGW("Special Case aligned alignedw %d * alignedh %d = %d",alignedw,alignedh,size);
+            break;	
         default:
             ALOGE("unrecognized pixel format: 0x%x", format);
+	    ALOGE("Format %d",format);
             return -EINVAL;
     }
 
