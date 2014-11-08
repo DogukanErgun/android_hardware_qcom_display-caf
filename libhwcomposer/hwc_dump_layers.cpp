@@ -326,8 +326,10 @@ void HwcDebug::dumpLayer(size_t layerIndex, hwc_layer_1_t hwLayers[])
                 break;
         }
         if (SkBitmap::kNo_Config != tempSkBmpConfig) {
-            tempSkBmp->setConfig(tempSkBmpConfig, hnd->width, hnd->height);
-            tempSkBmp->setPixels((void*)hnd->base);
+            //tempSkBmp->setConfig(tempSkBmpConfig, hnd->width, hnd->height);
+	    SkImageInfo info = SkImageInfo::Make(hnd->width, hnd->height, SkBitmapConfigToColorType(tempSkBmpConfig),kIgnore_SkAlphaType);
+            //tempSkBmp->setPixels((void*)hnd->base);
+	    tempSkBmp->installPixels(info,(void*)hnd->base,hnd->height);
             bResult = SkImageEncoder::EncodeFile(dumpFilename,
                                     *tempSkBmp, SkImageEncoder::kPNG_Type, 100);
             ALOGI("Display[%s] Layer[%d] %s Dump to %s: %s",
